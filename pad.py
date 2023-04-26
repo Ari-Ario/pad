@@ -21,7 +21,7 @@ class main:
     def draw(self, e):
         if self.pre_x and self.pre_y:
             self.c.create_line(self.pre_x, self.pre_y, e.x, e.y, width=self.brush_width,
-                               fill=self.col_fg, capstyle="round")
+                               fill=self.col_fg, capstyle="round", smooth=True)
         self.pre_x = e.x
         self.pre_y = e.y
     
@@ -53,6 +53,40 @@ class main:
     def clear_pad(self):
         self.c.delete(ALL)
 
+    #method to creat a line
+    def line(self):
+        win_line = Tk()
+        win_line.mainloop
+        win_line.title("Enter the coordinates")
+        label_x1 = Label(win_line, text="X1").grid(row=0, column=0)
+        label_y1 = Label(win_line, text="Y1").grid(row=1, column=0)
+        label_x2 = Label(win_line, text="X2").grid(row=2, column=0)
+        label_y2 = Label(win_line, text="Y2").grid(row=3, column=0)
+        self.entry_x1 = Entry(win_line, width=10)
+        self.entry_x1.grid(row=0, column=1)
+        self.entry_y1 = Entry(win_line, width=10)
+        self.entry_y1.grid(row=1, column=1)
+        self.entry_x2 = Entry(win_line, width=10)
+        self.entry_x2.grid(row=2, column=1)
+        self.entry_y2 = Entry(win_line, width=10)
+        self.entry_y2.grid(row=3, column=1)
+        but_insert= Button(win_line, text="Insert", relief=RAISED, command=self.get_line)
+        but_insert.grid(row=4, column=0, sticky=NSEW)
+        but_cancel= Button(win_line, text="Cancel", relief=RAISED, command=win_line.destroy)
+        but_cancel.grid(row=4, column=1, sticky=NSEW)
+
+    def get_line(self):
+        x1= self.entry_x1.get()
+        y1= self.entry_y1.get()
+        x2= self.entry_x2.get()
+        y2= self.entry_y2.get()
+        print(x1, y1, x2, y2)
+        if x1 and x2 and y1 and y2:
+            self.c.create_line(x1, y1, x2, y2, fill=self.col_fg)
+        else:
+            messagebox.showerror("Error", "please fill in all coordinates or cancel for exit.")
+
+
     #all labels, frames, canvas, filemenu, etc. within this method
     def draw_widgets(self):
         self.controls = Frame(self.master, padx=5, pady=5)
@@ -82,7 +116,7 @@ class main:
         #geometry-menu
         geometrymenu= Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Insert", menu=geometrymenu)
-        geometrymenu.add_command(label="Line" , command=None)
+        geometrymenu.add_command(label="Line" , command=self.line)
         geometrymenu.add_command(label="Circle" , command=None)
         geometrymenu.add_command(label="Triangular" , command=None)
 
