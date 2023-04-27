@@ -119,12 +119,14 @@ class main:
             self.reset("<ButtonRelease-1>")
         else:
             messagebox.showerror("Error", "please fill in all coordinates or press Quit.")
+    
+    #method of the window to open as popup to enter the coordinates of polygone
     def polygone_window(self):
         self.win_poly= Tk()
         self.win_poly.title("Enter Coordinates")
-        label_description= Label(self.win_poly, text="Enter at least five tuples of coordinates!")
+        label_description= Label(self.win_poly, text="Enter 6 numbert (3 tuples) for triangular and more for polygone!")
         label_description.grid(row=0, column=0, columnspan=2)
-        label_eg= Label(self.win_poly, text="eg.: 100, 100, 120, 100, 140, 120, 120, 140, 100, 140")
+        label_eg= Label(self.win_poly, text="eg.: 100, 100, 120, 100, 140, 120, 120, 140, 100, 140, 220, 200 ...")
         label_eg.grid(row=1, column=0)
         self.entry_coordinates= Entry(self.win_poly, width=70)
         self.entry_coordinates.grid(row=2, column=0)
@@ -141,12 +143,12 @@ class main:
         lst = []
         for i in points:
             lst.append(int(i))
-        if len(lst)>=10:
+        if len(lst)>=6:
             self.c.create_polygon(lst, fill=self.col_fg, width=self.brush_width)
             self.win_poly.destroy()
             self.reset("<ButtonRelease-1>")
         else:
-            messagebox.showerror("entry error", "Perhaps not numbers or no comma or sum of coordinates are less than 10!")
+            messagebox.showerror("entry error", "Perhaps not numbers or no comma or sum of coordinates are less than 6!")
 
     #method of popup-creator
     def do_popup(self, event):
