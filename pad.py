@@ -119,6 +119,34 @@ class main:
             self.reset("<ButtonRelease-1>")
         else:
             messagebox.showerror("Error", "please fill in all coordinates or press Quit.")
+    def polygone_window(self):
+        self.win_poly= Tk()
+        self.win_poly.title("Enter Coordinates")
+        label_description= Label(self.win_poly, text="Enter at least five tuples of coordinates!")
+        label_description.grid(row=0, column=0, columnspan=2)
+        label_eg= Label(self.win_poly, text="eg.: 100, 100, 120, 100, 140, 120, 120, 140, 100, 140")
+        label_eg.grid(row=1, column=0)
+        self.entry_coordinates= Entry(self.win_poly, width=70)
+        self.entry_coordinates.grid(row=2, column=0)
+        
+        but_enter= Button(self.win_poly, text="Enter", command=self.get_poly)
+        but_enter.grid(row=3, column=0, sticky=W)
+        but_quit= Button(self.win_poly, text="Quit", fg="red", command=self.win_poly.destroy)
+        but_quit.grid(row=3, column=0, sticky=E)
+
+    #method of polygone-creator
+    def get_poly(self):
+        self.nums= self.entry_coordinates.get()
+        points= self.nums.split(",")
+        lst = []
+        for i in points:
+            lst.append(int(i))
+        if len(lst)>=10:
+            self.c.create_polygon(lst, fill=self.col_fg, width=self.brush_width)
+            self.win_poly.destroy()
+            self.reset("<ButtonRelease-1>")
+        else:
+            messagebox.showerror("entry error", "Perhaps not numbers or no comma or sum of coordinates are less than 10!")
 
     #method of popup-creator
     def do_popup(self, event):
@@ -161,7 +189,8 @@ class main:
         geometrymenu.add_command(label="Circle" , command=self.coordinates_win)
         geometrymenu.add_command(label="Rectangle" , command=self.coordinates_win)
         geometrymenu.add_separator()
-        geometrymenu.add_command(label="Triangular", command=None) #must have another window
+        geometrymenu.add_command(label="Triangular", command=self.polygone_window) #must have another window
+        geometrymenu.add_command(label="Polygone", command=self.polygone_window) 
         #pop-up menu by right-click
         self.popup_menu = Menu(self.c, tearoff=0)
         #copy menu will be added
