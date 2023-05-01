@@ -184,9 +184,9 @@ class main:
         path = askopenfilename(title="name",defaultextension="*.*", filetypes=[("All Files", "*.*"), ("JPG", ".jpg")])
         if not path:
             return messagebox.showerror("Path Problem","Path does not exist")
-        #name = path.split("/")
-        img = ImageTk.PhotoImage(Image.open(path))
-        self.c.create_image(img.width,img.height,image=img)
+        self.img = ImageTk.PhotoImage(Image.open(path))
+        self.c.create_image(20, 20, anchor=NW, image=self.img)
+        self.c.Image= self.img
 
     #all labels, frames, canvas, filemenu, etc. within this method
     def draw_widgets(self):
