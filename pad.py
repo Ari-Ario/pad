@@ -3,6 +3,9 @@
 import tkinter
 from tkinter import *
 from tkinter import ttk, messagebox, colorchooser
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+import subprocess
+from PIL import Image, ImageTk
 
 #in oop: class instead functional pro.
 class main:
@@ -157,6 +160,33 @@ class main:
         finally:
             self.popup_menu.grab_release()
 
+    #method to save the Pad
+    def save_as_img(self):
+        self.win_save_as= Tk()
+        self.win_save_as.title("Enter filename")
+        self.entry_save_as = Entry(self.win_save_as)
+        self.entry_save_as.grid(row=0, column=0)
+        self.butt_save_as= Button(self.win_save_as, text="Save", command=self.get_img)
+        self.butt_save_as.grid(row=0, column=1)
+        self.butt_quit_save= Button(self.win_save_as, text="Quit and back to Pad")
+        self.butt_quit_save.grid(row=2, column=1, columnspan=1, sticky=NSEW)
+
+    #method to save the photo as soon as clicking the butt_save_as
+    def get_img(self, filename="temp"):
+        self.win_save_as.title("Wait, saving image!")
+        filename= self.entry_save_as.get()
+        self.c.postscript(file=f"{filename}.ps", colormode="color")
+        process= subprocess.Popen(["ps2pdf",f"{filename}.ps", "result.pdf"], shell=True)
+        process.wait(2)
+        self.win_save_as.destroy()
+
+    def import_img(self):
+        path = askopenfilename(title="name",defaultextension="*.*", filetypes=[("All Files", "*.*"), ("JPG", ".jpg")])
+        if not path:
+            return messagebox.showerror("Path Problem","Path does not exist")
+        #name = path.split("/")
+        img = ImageTk.PhotoImage(Image.open(path))
+        self.c.create_image(img.width,img.height,image=img)
 
     #all labels, frames, canvas, filemenu, etc. within this method
     def draw_widgets(self):
@@ -175,8 +205,8 @@ class main:
         #file-menu
         filemeu= Menu(menubar, tearoff=0)
         menubar.add_cascade(label="File", menu=filemeu)
-        filemeu.add_command(label="Save As", command=None)
-        filemeu.add_command(label="Import", command=None)
+        filemeu.add_command(label="Save As", command=self.save_as_img)
+        filemeu.add_command(label="Import", command=self.import_img)
         filemeu.add_command(label="Exit", command=self.master.destroy)
         #edit-menu
         editmenu= Menu(menubar, tearoff=0)
@@ -198,6 +228,8 @@ class main:
         #copy menu will be added
         #cut menu will be added
         self.popup_menu.add_command(label="Insert shape", command=self.coordinates_win)
+        self.popup_menu.add_command(label="Import image", command=None)
+        self.popup_menu.add_cascade(label="Save as", command=self.save_as_img)
         #binding the popup menu with its method above: do_popup
         self.c.bind("<Button-3>", self.do_popup)
 
