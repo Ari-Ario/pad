@@ -189,8 +189,43 @@ class main:
         self.c.create_image(20, 20, anchor=NW, image=self.img)
         self.c.Image= self.img
     
+    #Method of a new popup window to get set new entries
     def chart_win(self):
-        pass
+        self.charwindow= Tk()
+        self.charwindow.title("Enteies of chart")
+        self.label_item_num= Label(self.charwindow , text="Number of entries:")
+        self.entry_item_num= Entry(self.charwindow, width=10)
+        self.button_item= Button(self.charwindow ,text="Enter", command=self.set_char)
+
+        self.charwindow.grid()
+        self.label_item_num.grid(row=0, column=0)
+        self.entry_item_num.grid(row=0, column=1)
+        self.button_item.grid(row=0, column=2)
+
+    #Method to set the char with new entries etc.
+    def set_char(self):
+        self.entry_num = int(self.entry_item_num.get())
+        label_names= Label(self.charwindow, text="Enter words:  ")
+        label_numbers= Label(self.charwindow, text="Enter numbers:  ")
+        butt_insert= Button(self.charwindow, text="Insert Chart", bg="green", command=self.get_char)
+        butt_quit= Button(self.charwindow, text="Quit", command=self.charwindow.destroy)
+        for i in range(self.entry_num):
+            self.name_entries = Entry(self.charwindow, width=10)
+            self.num_etries= Entry(self.charwindow, width=10)
+            self.name_entries.grid(row=1, column= i+1)
+            self.num_etries.grid(row=2, column= i+1)
+        #gird of the new labels and buttons
+        label_names.grid(row=1, column=0, sticky=E)
+        label_numbers.grid(row=2, column=0, sticky=E)
+        butt_insert.grid(row=3, column=0)
+        butt_quit.grid(row=3, column=1)
+
+    #Method to get the entries of char
+    def get_char(self):
+        lst= []
+        for i in range(self.entry_num):
+            lst.append(self.name_entries.get())
+        print(lst)
 
     #all labels, frames, canvas, filemenu, etc. within this method
     def draw_widgets(self):
