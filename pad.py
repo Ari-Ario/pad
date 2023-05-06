@@ -6,6 +6,7 @@ from tkinter import ttk, messagebox, colorchooser
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import subprocess
 from PIL import Image, ImageTk
+import matplotlib.pyplot as plt
 
 #in oop: class instead functional pro.
 class main:
@@ -187,15 +188,20 @@ class main:
         self.img = ImageTk.PhotoImage(Image.open(path))
         self.c.create_image(20, 20, anchor=NW, image=self.img)
         self.c.Image= self.img
+    
+    def chart_win(self):
+        pass
 
     #all labels, frames, canvas, filemenu, etc. within this method
     def draw_widgets(self):
         self.controls = Frame(self.master, padx=5, pady=5)
         textpw = Label(self.controls, text="Pen Width")
-        textpw.grid(row=0, column=0)
+        textpw.grid(row=0, column=0, sticky=N)
         self.slider= ttk.Scale(self.controls, from_=5, to=100, command=self.brush_change)
         self.slider.set(self.brush_width)
-        self.slider.grid(row=1, column=0)
+        self.slider.grid(row=1, column=0, sticky=N, pady=5)
+        self.charts= Button(self.controls, text="Insert Chart", command=self.chart_win)
+        self.charts.grid(row=2, column=0, sticky=S, pady= 40)
         self.controls.pack(side=LEFT)
         self.c = Canvas(self.master, bg=self.col_bg)
         self.c.pack(fill=BOTH, expand=True)
@@ -216,13 +222,17 @@ class main:
         editmenu.add_command(label="Clear Pad", command=self.clear_pad)
         #geometry-menu
         geometrymenu= Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="Insert", menu=geometrymenu)
+        menubar.add_cascade(label="Insert Geo", menu=geometrymenu)
         geometrymenu.add_command(label="Line" , command=self.coordinates_win)
         geometrymenu.add_command(label="Circle" , command=self.coordinates_win)
         geometrymenu.add_command(label="Rectangle" , command=self.coordinates_win)
         geometrymenu.add_separator()
         geometrymenu.add_command(label="Triangular", command=self.polygone_window) #must have another window
-        geometrymenu.add_command(label="Polygone", command=self.polygone_window) 
+        geometrymenu.add_command(label="Polygone", command=self.polygone_window)
+        #chartmenu
+        chartmenu= Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Chart", menu=chartmenu)
+        chartmenu.add_command(label="Open Chart", command=self.chart_win)
         #pop-up menu by right-click
         self.popup_menu = Menu(self.c, tearoff=0)
         #copy menu will be added
