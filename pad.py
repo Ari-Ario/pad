@@ -193,9 +193,9 @@ class main:
     def chart_win(self):
         self.charwindow= Tk()
         self.charwindow.title("Enteies of chart")
-        self.charwindow.geometry("255x415")
-        self.label_item_num= Label(self.charwindow , text="Entries#:  ")
-        self.spin_item_num= Spinbox(self.charwindow, width=6, from_=1, to=1000)
+        #self.charwindow.geometry("280x800")
+        self.label_item_num= Label(self.charwindow , text="Entries#: ")
+        self.spin_item_num= Spinbox(self.charwindow, width=6, from_=1, to=30)
         self.button_item= Button(self.charwindow ,text="Next", command=self.set_char)
         sep= ttk.Separator(self.charwindow, orient=HORIZONTAL)
 
@@ -208,34 +208,29 @@ class main:
     #Method to set the char with new entries etc.
     def set_char(self):
         self.entry_num = int(self.spin_item_num.get())
-        label_names= Label(self.charwindow, text="words")
-        label_numbers= Label(self.charwindow, text="numbers")
+        label_names= Label(self.charwindow, text="Category")
+        label_numbers= Label(self.charwindow, text="Values")
         butt_insert= Button(self.charwindow, text="Insert", fg="green", command=self.get_char)
         butt_quit= Button(self.charwindow, text="Quit", fg="red", command=self.charwindow.destroy)
+        self.text_box= Text(self.charwindow, height=self.entry_num, width=16, font=("Currier", 14))
+        scroll= Scrollbar(self.charwindow, orient=VERTICAL)
+        scroll.bind(self.charwindow)
         for i in range(self.entry_num):
             self.label= Label(self.charwindow,text=f"Entry {i+1}: ")
-            self.name_entries = Entry(self.charwindow, width=10)
-            self.num_etries= Entry(self.charwindow, width=10)
-            scroll= Scrollbar(self.charwindow, orient=VERTICAL)
-            scroll.bind(self.num_etries)
-
-            self.label.grid(row=i+3, column=0, sticky=E)
-            self.name_entries.grid(row=i+3, column= 1)
-            self.num_etries.grid(row=i+3, column= 2)
-        scroll.grid(row=3, column=3, rowspan=30, sticky=NS)
+            self.label.grid(row=i+3, column=0, sticky=W)
 
         #gird of the new labels and buttons
         label_names.grid(row=2, column=1, sticky=S)
         label_numbers.grid(row=2, column=2, sticky=S)
         butt_insert.grid(row=i+4, column=0, sticky=W)
         butt_quit.grid(row=i+4, column=2, sticky=E)
+        self.text_box.grid(row=3, column=1, rowspan=self.entry_num, columnspan=2)
+        scroll.grid(row=3, column=3, rowspan=self.entry_num, sticky=NS)
 
     #Method to get the entries of char
     def get_char(self):
-        lst= []
-        for i in range(self.entry_num):
-            name = self.name_entries.get()
-            lst.append(name)
+        text= self.text_box.get()
+        lst = text.split()
         print(lst)
 
     #all labels, frames, canvas, filemenu, etc. within this method
