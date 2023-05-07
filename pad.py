@@ -191,15 +191,15 @@ class main:
     
     #Method of a new popup window to get set new entries
     def chart_win(self):
-        self.charwindow= Tk()
-        self.charwindow.title("Enteies of chart")
+        self.chartwindow= Tk()
+        self.chartwindow.title("Enteies of chart")
         #self.charwindow.geometry("280x800")
-        self.label_item_num= Label(self.charwindow , text="Entries#: ")
-        self.spin_item_num= Spinbox(self.charwindow, width=6, from_=1, to=30)
-        self.button_item= Button(self.charwindow ,text="Next", command=self.set_char)
-        sep= ttk.Separator(self.charwindow, orient=HORIZONTAL)
+        self.label_item_num= Label(self.chartwindow , text="Entries#: ")
+        self.spin_item_num= Spinbox(self.chartwindow, width=6, from_=1, to=30)
+        self.button_item= Button(self.chartwindow ,text="Next", command=self.set_char)
+        sep= ttk.Separator(self.chartwindow, orient=HORIZONTAL)
 
-        self.charwindow.grid()
+        self.chartwindow.grid()
         self.label_item_num.grid(row=0, column=0)
         self.spin_item_num.grid(row=0, column=1)
         self.button_item.grid(row=0, column=2, sticky=E)
@@ -208,21 +208,21 @@ class main:
     #Method to set the char with new entries etc.
     def set_char(self):
         self.entry_num = int(self.spin_item_num.get())
-        label_names= Label(self.charwindow, text="Category")
-        label_numbers= Label(self.charwindow, text="Values")
-        label_char_name= Label(self.charwindow, text="Select char:")
+        label_names= Label(self.chartwindow, text="Category")
+        label_numbers= Label(self.chartwindow, text="Values")
+        label_char_name= Label(self.chartwindow, text="Select char:")
         self.var= StringVar
         lst= ["vertical barchart", "horizontal barchart", "pie-chart", "line-chart", "line-chart filled"]
-        self.spinbox_chars= ttk.Combobox(self.charwindow, width=10, values=lst, textvariable=self.var)
-        butt_preview_char= ttk.Button(self.charwindow,text="Preview")
-        butt_insert= Button(self.charwindow, text="Insert", fg="green", command=self.get_char)
-        butt_quit= Button(self.charwindow, text="Quit", fg="red", command=self.charwindow.destroy)
+        self.spinbox_chars= ttk.Combobox(self.chartwindow, width=10, values=lst, textvariable=self.var)
+        butt_preview_char= ttk.Button(self.chartwindow,text="Preview", command=self.preview_chart)
+        butt_insert= Button(self.chartwindow, text="Insert", fg="green", command=self.get_char)
+        butt_quit= Button(self.chartwindow, text="Quit", fg="red", command=self.chartwindow.destroy)
         #butt_insert_char= Button(text="Insert", command=self.get_char)
-        self.text_box= Text(self.charwindow, height=self.entry_num, width=16, font=("Currier", 14))
+        self.text_box= Text(self.chartwindow, height=self.entry_num, width=16, font=("Currier", 14))
         #scroll= Scrollbar(self.charwindow, orient=VERTICAL)
         #scroll.bind(self.charwindow)
         for i in range(self.entry_num):
-            self.label= Label(self.charwindow,text=f"Entry {i+1}: ")
+            self.label= Label(self.chartwindow,text=f"Entry {i+1}: ")
             self.label.grid(row=i+3, column=0, sticky=W)
 
         #gird of the new labels and buttons
@@ -237,9 +237,10 @@ class main:
         #scroll.grid(row=3, column=3, rowspan=self.entry_num, sticky=NS)
 
     #Method to get the entries of char
-    def get_char(self):
+    def get_dict(self):
         text= self.text_box.get("1.0", END)
         lst = text.split()
+        #key, value= lst[0], lst[1]
         self.dict ={}
         for i in range(len(lst)):
             if i%2==0:
@@ -248,11 +249,72 @@ class main:
                 value= lst[i]
                 if key not in self.dict:
                     self.dict[key]= value
-           
+        print(self.dict)
+
+    #Method to previw the chart before insertion
+    def preview_chart(self):
+        self.get_dict()
         if self.spinbox_chars.get()== "vertical barchart":
-            print(1)
+            fig1 = plt.subplot()
+            fig1.bar(self.dict.keys(), self.dict.values())
+            fig1.set_xlabel("Category")
+            fig1.set_ylabel("Value")
+            plt.show()
         elif self.spinbox_chars.get()== "horizontal barchart":
-            print(2)
+            fig2 = plt.subplot()
+            fig2.barh(list(self.dict.keys()), list(self.dict.values()))
+            fig2.set_xlabel("Value")
+            fig2.set_ylabel("Category")
+            plt.show()
+        elif self.spinbox_chars.get()== "pie-chart":
+            fig3 = plt.subplot()
+            fig3.pie(self.dict.values(), labels= self.dict.keys(), autopct="%1.1f%%")
+            plt.show()
+        elif self.spinbox_chars.get()== "line-chart":
+            fig4 = plt.subplot()
+            fig4.plot(list(self.dict.keys()), list(self.dict.values()))
+            fig4.set_xlabel("Value")
+            fig4.set_ylabel("Category")
+            plt.show()
+        elif self.spinbox_chars.get()== "line-chart filled":
+            fig5 = plt.subplot()
+            fig5.fill_between(list(self.dict.keys()), list(self.dict.values()))
+            fig5.set_xlabel("Value")
+            fig5.set_ylabel("Category")
+            plt.show()
+
+    #Method to insert differentchars into the canvas (Pad)
+    def get_char(self):
+        self.get_dict()
+        if self.spinbox_chars.get()== "vertical barchart":
+            fig1 = plt.subplot()
+            fig1.bar(self.dict.keys(), self.dict.values())
+            fig1.set_xlabel("Category")
+            fig1.set_ylabel("Value")
+            #self.c.create_image(20, 20, anchor=NW, image= fig1)
+            #self.c.image= fig1
+        elif self.spinbox_chars.get()== "horizontal barchart":
+            fig2 = plt.subplot()
+            fig2.barh(list(self.dict.keys()), list(self.dict.values()))
+            fig2.set_xlabel("Value")
+            fig2.set_ylabel("Category")
+            #plt.show()
+        elif self.spinbox_chars.get()== "pie-chart":
+            fig3 = plt.subplot()
+            fig3.pie(self.dict.values(), labels= self.dict.keys(), autopct="%1.1f%%")
+            #plt.show()
+        elif self.spinbox_chars.get()== "line-chart":
+            fig4 = plt.subplot()
+            fig4.plot(list(self.dict.keys()), list(self.dict.values()))
+            fig4.set_xlabel("Value")
+            fig4.set_ylabel("Category")
+            #plt.show()
+        elif self.spinbox_chars.get()== "line-chart filled":
+            fig5 = plt.subplot()
+            fig5.fill_between(list(self.dict.keys()), list(self.dict.values()))
+            fig5.set_xlabel("Value")
+            fig5.set_ylabel("Category")
+            #plt.show()
         
 
     #all labels, frames, canvas, filemenu, etc. within this method
