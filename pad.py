@@ -210,11 +210,17 @@ class main:
         self.entry_num = int(self.spin_item_num.get())
         label_names= Label(self.charwindow, text="Category")
         label_numbers= Label(self.charwindow, text="Values")
+        label_char_name= Label(self.charwindow, text="Select char:")
+        self.var= StringVar
+        lst= ["vertical barchart", "horizontal barchart", "pie-chart", "line-chart", "line-chart filled"]
+        self.spinbox_chars= ttk.Combobox(self.charwindow, width=10, values=lst, textvariable=self.var)
+        butt_preview_char= ttk.Button(self.charwindow,text="Preview")
         butt_insert= Button(self.charwindow, text="Insert", fg="green", command=self.get_char)
         butt_quit= Button(self.charwindow, text="Quit", fg="red", command=self.charwindow.destroy)
+        #butt_insert_char= Button(text="Insert", command=self.get_char)
         self.text_box= Text(self.charwindow, height=self.entry_num, width=16, font=("Currier", 14))
-        scroll= Scrollbar(self.charwindow, orient=VERTICAL)
-        scroll.bind(self.charwindow)
+        #scroll= Scrollbar(self.charwindow, orient=VERTICAL)
+        #scroll.bind(self.charwindow)
         for i in range(self.entry_num):
             self.label= Label(self.charwindow,text=f"Entry {i+1}: ")
             self.label.grid(row=i+3, column=0, sticky=W)
@@ -222,16 +228,32 @@ class main:
         #gird of the new labels and buttons
         label_names.grid(row=2, column=1, sticky=S)
         label_numbers.grid(row=2, column=2, sticky=S)
-        butt_insert.grid(row=i+4, column=0, sticky=W)
-        butt_quit.grid(row=i+4, column=2, sticky=E)
         self.text_box.grid(row=3, column=1, rowspan=self.entry_num, columnspan=2)
-        scroll.grid(row=3, column=3, rowspan=self.entry_num, sticky=NS)
+        label_char_name.grid(row=i+4, column=0, columnspan=1)
+        self.spinbox_chars.grid(row=i+4, column=1, columnspan=1)
+        butt_preview_char.grid(row=i+4, column=2)
+        butt_insert.grid(row=i+5, column=0, sticky=W)
+        butt_quit.grid(row=i+5, column=2, sticky=E)
+        #scroll.grid(row=3, column=3, rowspan=self.entry_num, sticky=NS)
 
     #Method to get the entries of char
     def get_char(self):
-        text= self.text_box.get()
+        text= self.text_box.get("1.0", END)
         lst = text.split()
-        print(lst)
+        self.dict ={}
+        for i in range(len(lst)):
+            if i%2==0:
+                key = lst[i]
+            elif i%2:
+                value= lst[i]
+                if key not in self.dict:
+                    self.dict[key]= value
+           
+        if self.spinbox_chars.get()== "vertical barchart":
+            print(1)
+        elif self.spinbox_chars.get()== "horizontal barchart":
+            print(2)
+        
 
     #all labels, frames, canvas, filemenu, etc. within this method
     def draw_widgets(self):
