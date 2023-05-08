@@ -7,6 +7,7 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 import subprocess
 from PIL import Image, ImageTk
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 #in oop: class instead functional pro.
 class main:
@@ -169,8 +170,8 @@ class main:
         self.entry_save_as.grid(row=0, column=0)
         self.butt_save_as= Button(self.win_save_as, text="Save", command=self.get_img)
         self.butt_save_as.grid(row=0, column=1)
-        self.butt_quit_save= Button(self.win_save_as, text="Quit and back to Pad")
-        self.butt_quit_save.grid(row=2, column=1, columnspan=1, sticky=NSEW)
+        self.butt_quit_save= Button(self.win_save_as, text="Quit and back to Pad", command=self.win_save_as.destroy, fg="red")
+        self.butt_quit_save.grid(row=2, column=0, columnspan=2, sticky=NSEW, padx=5, pady=10)
 
     #method to save the photo as soon as clicking the butt_save_as
     def get_img(self, filename="temp"):
@@ -249,7 +250,6 @@ class main:
                 value= lst[i]
                 if key not in self.dict:
                     self.dict[key]= value
-        print(self.dict)
 
     #Method to previw the chart before insertion
     def preview_chart(self):
@@ -287,34 +287,35 @@ class main:
     def get_char(self):
         self.get_dict()
         if self.spinbox_chars.get()== "vertical barchart":
-            fig1 = plt.subplot()
-            fig1.bar(self.dict.keys(), self.dict.values())
-            fig1.set_xlabel("Category")
-            fig1.set_ylabel("Value")
-            #self.c.create_image(20, 20, anchor=NW, image= fig1)
-            #self.c.image= fig1
+            fig = plt.subplot()
+            fig.bar(self.dict.keys(), self.dict.values())
+            fig.set_xlabel("Category")
+            fig.set_ylabel("Value")
+
         elif self.spinbox_chars.get()== "horizontal barchart":
-            fig2 = plt.subplot()
-            fig2.barh(list(self.dict.keys()), list(self.dict.values()))
-            fig2.set_xlabel("Value")
-            fig2.set_ylabel("Category")
+            fig = plt.subplot()
+            fig.barh(list(self.dict.keys()), list(self.dict.values()))
+            fig.set_xlabel("Value")
+            fig.set_ylabel("Category")
             #plt.show()
         elif self.spinbox_chars.get()== "pie-chart":
-            fig3 = plt.subplot()
-            fig3.pie(self.dict.values(), labels= self.dict.keys(), autopct="%1.1f%%")
+            fig = plt.subplot()
+            fig.pie(self.dict.values(), labels= self.dict.keys(), autopct="%1.1f%%")
             #plt.show()
         elif self.spinbox_chars.get()== "line-chart":
-            fig4 = plt.subplot()
-            fig4.plot(list(self.dict.keys()), list(self.dict.values()))
-            fig4.set_xlabel("Value")
-            fig4.set_ylabel("Category")
+            fig = plt.subplot()
+            fig.plot(list(self.dict.keys()), list(self.dict.values()))
+            fig.set_xlabel("Value")
+            fig.set_ylabel("Category")
             #plt.show()
         elif self.spinbox_chars.get()== "line-chart filled":
-            fig5 = plt.subplot()
-            fig5.fill_between(list(self.dict.keys()), list(self.dict.values()))
-            fig5.set_xlabel("Value")
-            fig5.set_ylabel("Category")
-            #plt.show()
+            fig = plt.subplot()
+            fig.fill_between(list(self.dict.keys()), list(self.dict.values()))
+            fig.set_xlabel("Value")
+            fig.set_ylabel("Category")
+        canvas= FigureCanvasTkAgg(fig, self.frame_pad)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=LEFT, fill=BOTH)
         
 
     #all labels, frames, canvas, filemenu, etc. within this method
@@ -328,8 +329,11 @@ class main:
         self.charts= Button(self.controls, text="Insert Chart", command=self.chart_win)
         self.charts.grid(row=2, column=0, sticky=S, pady= 40)
         self.controls.pack(side=LEFT)
+        self.frame_pad= Frame(self.master)
         self.c = Canvas(self.master, bg=self.col_bg)
         self.c.pack(fill=BOTH, expand=True)
+        self.frame_pad.pack(fill=BOTH, expand=True)
+
         #menu
         menubar = Menu(self.master)
         self.master.config(menu=menubar)
